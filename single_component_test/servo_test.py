@@ -7,7 +7,9 @@ kit = ServoKit(channels=16)
 
 while True:
     kit.servo[1].angle = 180
+    print("Dosao sam do 180 stepeni!")
     time.sleep(1)
+    print("Vratio sam se na pocetak!")
     kit.servo[1].angle = 0
 
 
