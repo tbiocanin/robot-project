@@ -6,7 +6,7 @@ host = '192.168.0.106'
 def take_user_input():
     user_input = bytes(input("Unesi sta zelis da se posalje na server: "))
     # s.encode()
-    s.send(user_input.encode())
+    s.send(user_input.encode("utf-8"))
     return user_input
 
 
