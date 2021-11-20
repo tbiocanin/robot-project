@@ -3,8 +3,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/status.dart' as status;
-
-void main() => runApp(const MyApp());
+void main() async => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -16,7 +15,6 @@ class MyApp extends StatelessWidget {
       title: title,
       home: MyHomePage(
         title: title,
-        // _channel: IOWebSocketChannel.connect('ws://192.168.16.126:1234'),
       ),
     );
   }
@@ -35,9 +33,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _currentSliderValue = 20;
-  final channel = IOWebSocketChannel.connect('ws://192.168.0.106:12345');
+  double _currentSliderValue = 20.0;
+  final TextEditingController _controller = TextEditingController();
+  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1234');
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,19 +58,24 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (double value) {
                 setState(() {
                   _currentSliderValue = value;
+                  _channel.sink.add(_currentSliderValue);
                 });
               },
             ),
-            // StreamBuilder(
-            //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-            //     return Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Container(
-            //         child: Text(snapshot.hasData ? '${snapshot.data}' : ' '),
-            //       ),
-            //     );
-            //   }
-            //   ),
+
+            Form(
+              child: TextFormField(
+                controller: _controller,
+                decoration: const InputDecoration(labelText: 'Send a message'),
+              ),
+            ),
+            const SizedBox(height: 24),
+            StreamBuilder(
+              stream: _channel.stream,
+              builder: (context, snapshot) {
+                return Text(snapshot.hasData ? '${snapshot.data}' : '');
+              },
+            )
           ],
         ),
       ),
@@ -83,16 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _sendMessage() {
-    // if (_controller.text.isNotEmpty) {
-      // var _channel;
-    channel.sink.add(_currentSliderValue);
-    print(_currentSliderValue);
-    // }
+    if (_controller.text.isNotEmpty) {
+      _channel.sink.add(_controller.text);
+    }
   }
 
-  // @override
-  // void dispose() {
-  //   channel.sink.close();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _channel.sink.close();
+    super.dispose();
+  }
 }
