@@ -35,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   double _currentSliderValue = 20.0;
   final TextEditingController _controller = TextEditingController();
-  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1234');
+  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
 
   
   @override
@@ -58,16 +58,9 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (double value) {
                 setState(() {
                   _currentSliderValue = value;
-                  _channel.sink.add(_currentSliderValue);
+                  _channel.sink.add(_currentSliderValue.toString());
                 });
               },
-            ),
-
-            Form(
-              child: TextFormField(
-                controller: _controller,
-                decoration: const InputDecoration(labelText: 'Send a message'),
-              ),
             ),
             const SizedBox(height: 24),
             StreamBuilder(
@@ -79,11 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _sendMessage,
-        tooltip: 'Send message',
-        child: const Icon(Icons.send),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -91,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_controller.text.isNotEmpty) {
       _channel.sink.add(_controller.text);
     }
+    _channel.sink.add(_currentSliderValue.toString());
   }
 
   @override
