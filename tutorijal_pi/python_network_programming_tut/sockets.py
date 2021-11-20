@@ -1,26 +1,20 @@
-import socket
+import asyncio
+from websockets import serve
+import time
+from adafruit_servokit import ServoKit
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = '192.168.0.106'
+kit = ServoKit(channels = 16)
 
-def take_user_input():
-    user_input = bytes(input("Unesi sta zelis da se posalje na server: "))
-    # s.encode()
-    s.send(user_input.encode("utf-8"))
-    return user_input
+async def echo(websocket):
+    async for message in websocket:
+        await websocket.send(message)
+        print(type(message))
+        angle_curr = int(float(message))
+        print(angle_curr)
+        kit.servo[0].angle = angle_curr
 
+async def main():
+    async with serve(echo, "192.168.0.106", 12346):
+        await asyncio.Future()  # run forever
 
-try:
-    s.connect((host, 12345))
-except:
-    print("Nije moguce uspostaviti konekciju")
-
-while True:
-    tmp_input_val = take_user_input()
-    if tmp_input_val == "Stop":
-        break
-    msg = s.recv(1024) #moguce je da ovde stvarno puca 
-    print(msg.decode("utf-8"))
-
-
-# client side for socket programming
+asyncio.run(main())
