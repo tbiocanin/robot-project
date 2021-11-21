@@ -33,7 +33,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _currentSliderValue = 20.0;
+  double _currentSliderValue = 0;
+  double _currentSliderValue2 = 0;
+  double _gornjiZglob = 0;
+  double _donjiZglob = 0;
+  double _kandzaRuke = 0;
   final TextEditingController _controller = TextEditingController();
   final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
 
@@ -49,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text("Servo motor kamere"),
             Slider(
               value: _currentSliderValue,
               min: 0,
@@ -58,7 +63,46 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (double value) {
                 setState(() {
                   _currentSliderValue = value;
-                  _channel.sink.add(_currentSliderValue.toString());
+                  _channel.sink.add("0" + _currentSliderValue.toString());
+                });
+              },
+            ),
+            Text("Servo motor gornjeg zgloba ruke"),
+            Slider(
+              min: 0,
+              max: 180,
+              value: _gornjiZglob,
+              onChanged: (double value) {
+                setState(() {
+                  _gornjiZglob = value;
+                  // _channel.sink.add("Drugi");
+                  _channel.sink.add("1" + _gornjiZglob.toString());
+                });
+              },
+            ),
+            Text("Servo motor donjeg ruke"),
+            Slider(
+              min: 0,
+              max: 180,
+              value: _donjiZglob,
+              onChanged: (double value) {
+                setState(() {
+                  _donjiZglob = value;
+                  // _channel.sink.add("Drugi");
+                  _channel.sink.add("2" + _donjiZglob.toString());
+                });
+              },
+            ),
+            Text("Servo motor kandza ruke"),
+            Slider(
+              min: 0,
+              max: 180,
+              value: _currentSliderValue2,
+              onChanged: (double value) {
+                setState(() {
+                  _kandzaRuke = value;
+                  // _channel.sink.add("Drugi");
+                  // _channel.sink.add("3" + _currentSliderValue2.toString());
                 });
               },
             ),
@@ -74,13 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
-  }
-
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      _channel.sink.add(_controller.text);
-    }
-    _channel.sink.add(_currentSliderValue.toString());
   }
 
   @override
