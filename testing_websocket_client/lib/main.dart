@@ -33,10 +33,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _currentSliderValue = 0;
-  double _currentSliderValue2 = 0;
+  double _baseSlider = 0;
+  double _lakatSlider = 0;
   double _gornjiZglob = 0;
-  double _donjiZglob = 0;
+  double _sliderKamera = 0;
   double _kandzaRuke = 0;
   final TextEditingController _controller = TextEditingController();
   final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
@@ -53,21 +53,34 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Servo motor kamere"),
+            Text("Servo osnove"),
             Slider(
-              value: _currentSliderValue,
+              value: _baseSlider,
               min: 0,
               max: 180,
               // divisions: 5,
-              label: '${_currentSliderValue.round()}',
+              label: '${_baseSlider.round()}',
               onChanged: (double value) {
                 setState(() {
-                  _currentSliderValue = value;
-                  _channel.sink.add("0" + _currentSliderValue.toString());
+                  _baseSlider = value;
+                  _channel.sink.add("0" + _baseSlider.toString());
                 });
               },
             ),
-            Text("Servo motor gornjeg zgloba ruke"),
+            Text("Lakat"),
+            Slider(
+              min: 0,
+              max: 180,
+              value: _lakatSlider,
+              onChanged: (double value) {
+                setState(() {
+                  _lakatSlider = value;
+                  // _channel.sink.add("Drugi");
+                  _channel.sink.add("1" + _lakatSlider.toString());
+                });
+              },
+            ),
+            Text("Gornji zglob"),
             Slider(
               min: 0,
               max: 180,
@@ -76,20 +89,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   _gornjiZglob = value;
                   // _channel.sink.add("Drugi");
-                  _channel.sink.add("1" + _gornjiZglob.toString());
+                  _channel.sink.add("2" + _gornjiZglob.toString());
                 });
               },
             ),
-            Text("Servo motor donjeg ruke"),
+            Text("Kamera"),
             Slider(
               min: 0,
               max: 180,
-              value: _donjiZglob,
+              value: _sliderKamera,
               onChanged: (double value) {
                 setState(() {
-                  _donjiZglob = value;
+                  _sliderKamera = value;
                   // _channel.sink.add("Drugi");
-                  _channel.sink.add("2" + _donjiZglob.toString());
+                  _channel.sink.add("3" + _sliderKamera.toString());
                 });
               },
             ),
@@ -97,12 +110,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Slider(
               min: 0,
               max: 180,
-              value: _currentSliderValue2,
+              value: _kandzaRuke,
               onChanged: (double value) {
                 setState(() {
                   _kandzaRuke = value;
                   // _channel.sink.add("Drugi");
-                  // _channel.sink.add("3" + _currentSliderValue2.toString());
+                  _channel.sink.add("4" + _kandzaRuke.toString());
                 });
               },
             ),
