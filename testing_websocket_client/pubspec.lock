@@ -81,6 +81,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  joystick:
+    dependency: "direct main"
+    description:
+      name: joystick
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   js:
     dependency: transitive
     description:

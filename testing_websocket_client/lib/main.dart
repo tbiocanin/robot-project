@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/status.dart' as status;
+import 'package:joystick/joystick.dart';
+import 'package:flutter/services.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 void main() async => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -10,6 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     const title = 'WebSocket Demo';
     return const MaterialApp(
       title: title,
@@ -45,15 +49,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      // appBar: AppBar(
+      //   title: Text(widget.title),
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
+        
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+
           children: [
-            Text("Servo osnove"),
+            const Text("Servo osnove"),
             Slider(
               value: _baseSlider,
               min: 0,
@@ -106,20 +113,35 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            Text("Servo motor kandza ruke"),
-            Slider(
-              min: 0,
-              max: 180,
-              value: _kandzaRuke,
-              onChanged: (double value) {
-                setState(() {
-                  _kandzaRuke = value;
-                  // _channel.sink.add("Drugi");
-                  _channel.sink.add("4" + _kandzaRuke.toString());
-                });
-              },
+            const Padding(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              padding: EdgeInsets.all(5),
+              child: Text("servo kandze ruke"),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // SizedBox(height: 10),
+                SizedBox(
+                  height: 10,
+                  width: 200,
+                  child: Slider(
+                    min: 0,
+                    max: 180,
+                    value: _kandzaRuke,
+                    onChanged: (double value) {
+                      setState(() {
+                        _kandzaRuke = value;
+                        // _channel.sink.add("Drugi");
+                        _channel.sink.add("4" + _kandzaRuke.toString());
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
             StreamBuilder(
               stream: _channel.stream,
               builder: (context, snapshot) {
