@@ -3,6 +3,7 @@ import 'package:joystick/joystick.dart';
 import 'package:flutter/services.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '';
 void main() async => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     const title = 'WebSocket Demo';
     return const MaterialApp(
       title: title,
-      home: MyHomePage(
+      home: Controller(
         title: title,
       ),
     );
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //   title: Text(widget.title),
       // ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.fromLTRB(500, 20, 20, 20),
         
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           children: [
             const Text("Servo osnove"),
-            Slider(
+              Slider(
               value: _baseSlider,
               min: 0,
               max: 180,
@@ -74,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
+            
             Text("Lakat"),
             Slider(
               min: 0,
@@ -113,19 +115,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            const Padding(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              padding: EdgeInsets.all(5),
-              child: Text("servo kandze ruke"),
-            ),
-            SizedBox(height: 10),
+
+            const Text("servo kandze ruke"),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // SizedBox(height: 10),
                 SizedBox(
                   height: 10,
-                  width: 200,
+                  width: 163,
                   child: Slider(
                     min: 0,
                     max: 180,
@@ -147,10 +145,14 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (context, snapshot) {
                 return Text(snapshot.hasData ? '${snapshot.data}' : '');
               },
-            )
+            ),
+
+            
           ],
         ),
       ),
+
+      
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
