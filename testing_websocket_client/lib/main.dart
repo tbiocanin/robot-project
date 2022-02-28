@@ -3,7 +3,7 @@ import 'package:joystick/joystick.dart';
 import 'package:flutter/services.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import '';
+import 'pages/controller.dart';
 void main() async => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
