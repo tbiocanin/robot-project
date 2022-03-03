@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:joystick/joystick.dart';
 import 'package:flutter/services.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -17,6 +16,7 @@ class MyApp extends StatelessWidget {
     ]);
     const title = 'WebSocket Demo';
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: title,
       home: Controller(
         title: title,

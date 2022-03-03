@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
-
+import 'package:joystick/joystick.dart';
+import 'package:control_pad/control_pad.dart';
 
 class Controller extends StatefulWidget {
   const Controller({Key ? key, required this.title}) : super(key : key);
@@ -23,20 +24,39 @@ final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
 @override 
 Widget build(BuildContext context) {
     return Scaffold(
+      
       // resizeToAvoidBottomInset: false,
       body: GridView.count(
-        padding: const EdgeInsets.symmetric(),
+        // padding: const EdgeInsets.symme,
+        
         crossAxisCount: 3,
         
         children: [
 
           //TODO: ovde ce ici kontroler:
-
+          Column(
+            children: [
+              const Text("Ovde ide kontroler"),
+              SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: JoystickView(),
+                ),
+            ],
+          ),
 
           Column(
+            //TODO: ovde ce ici kamera
+            children: [
+              const Text("ovde ide Kamera"),
+            ],
+          ),
 
+          Column(
+            
             // mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
+            
+            children:[
               const Text("Servo osnove"),
               Slider(
                 value: _baseSlider,
@@ -78,28 +98,24 @@ Widget build(BuildContext context) {
                   });
                 },
               ),
+              // const SizedBox(height: 30,),
               const Text("Kamera"),
-              Slider(
-                min: 0,
-                max: 180,
-                value: _sliderKamera,
-                onChanged: (double value) {
-                  setState(() {
-                    _sliderKamera = value;
-                    // _channel.sink.add("Drugi");
-                    _channel.sink.add("3" + _sliderKamera.toString());
-                  });
-                },
+              Expanded(
+                child: Slider(
+                  min: 0,
+                  max: 180,
+                  value: _sliderKamera,
+                  onChanged: (double value) {
+                    setState(() {
+                      _sliderKamera = value;
+                      // _channel.sink.add("Drugi");
+                      _channel.sink.add("3" + _sliderKamera.toString());
+                    });
+                  },
+                ),
               ),
             ],
             
-          ),
-
-          Column(
-            //TODO: ovde ce ici kamera
-            children: [
-              
-            ],
           )
         ],
         
