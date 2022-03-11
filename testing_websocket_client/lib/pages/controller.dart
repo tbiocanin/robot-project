@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:joystick/joystick.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-// import 'package:flutter_vlc_player/vlc_player.dart';
+// import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:video_player/video_player.dart';
 // import 'package:flutter_vlc_player/vlc_player_controller.dart';
 
 class Controller extends StatefulWidget {
@@ -20,16 +20,20 @@ double _lakatSlider = 0;
 double _gornjiZglob = 0;
 double _sliderKamera = 0;
 double _kandzaRuke = 0;
-final TextEditingController _controller = TextEditingController();
+// final TextEditingController _controller = TextEditingController();
 final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
-late VlcPlayerController _vlcViewController;
+late VideoPlayerController _controller;
 
-@override
+@override 
 void initState() {
   super.initState();
-  _vlcViewController =  VlcPlayerController.network('ws://192.168.0.106:12346',
-  autoPlay: true, options: VlcPlayerOptions());
-  
+  _controller = VideoPlayerController.network(
+    'ws://192.168.0.106:12346'
+  )..initialize().then((_) {
+    setState(() {
+      
+    });
+  });
 }
 
 @override 
@@ -72,19 +76,31 @@ Widget build(BuildContext context) {
             //TODO: ovde ce ici kamera
             children: [
               const Text("ovde ide Kamera"),
-              VlcPlayer(
-                controller: _vlcViewController,
-                placeholder: Container(),
-                aspectRatio: 16 / 9,
+              Center(
+                child: _controller.value.isInitialized 
+                ? AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                ) : Container(),
+              ),
+              Row(
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        _controller.value.isPlaying 
+                          ? _controller.pause()
+                          : _controller.play();
+                      });
+                    } 
+                  ),
+                ],
               )
             ],
-            
           ),
 
           Column(
-            
-            // mainAxisAlignment: MainAxisAlignment.start,
-            
+                        
             children:[
               const Text("Servo osnove"),
               Slider(
@@ -171,5 +187,11 @@ Widget build(BuildContext context) {
   //privremena funkcija dok ne razresim bag sa strane RPi-a
   void _stop() {
     _channel.sink.add("stop");
+  }
+
+  @override 
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 }
