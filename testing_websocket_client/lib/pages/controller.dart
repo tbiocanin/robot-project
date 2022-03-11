@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:joystick/joystick.dart';
-import 'package:control_pad/control_pad.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+// import 'package:flutter_vlc_player/vlc_player.dart';
+// import 'package:flutter_vlc_player/vlc_player_controller.dart';
 
 class Controller extends StatefulWidget {
   const Controller({Key ? key, required this.title}) : super(key : key);
@@ -20,6 +22,15 @@ double _sliderKamera = 0;
 double _kandzaRuke = 0;
 final TextEditingController _controller = TextEditingController();
 final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
+late VlcPlayerController _vlcViewController;
+
+@override
+void initState() {
+  super.initState();
+  _vlcViewController =  VlcPlayerController.network('ws://192.168.0.106:12346',
+  autoPlay: true, options: VlcPlayerOptions());
+  
+}
 
 @override 
 Widget build(BuildContext context) {
@@ -40,7 +51,19 @@ Widget build(BuildContext context) {
               SizedBox(
                   height: 200,
                   width: 200,
-                  child: JoystickView(),
+                  child: Joystick(
+                    
+                    size: 150,
+                    isDraggable: false,
+                    backgroundColor: Colors.black,
+                    opacity: .4,
+                    joystickMode: JoystickModes.all,
+                    onUpPressed: _moveForward,
+                    onDownPressed: _moveBackward,
+                    onLeftPressed: _moveLeft,
+                    onRightPressed: _moveRight,
+                    
+                  ),
                 ),
             ],
           ),
@@ -49,7 +72,13 @@ Widget build(BuildContext context) {
             //TODO: ovde ce ici kamera
             children: [
               const Text("ovde ide Kamera"),
+              VlcPlayer(
+                controller: _vlcViewController,
+                placeholder: Container(),
+                aspectRatio: 16 / 9,
+              )
             ],
+            
           ),
 
           Column(
@@ -121,5 +150,26 @@ Widget build(BuildContext context) {
         
       ),
     );
+  }
+
+  void _moveForward() {
+    _channel.sink.add("w");
+  }
+
+  void _moveBackward() {
+    _channel.sink.add("s");
+  }
+
+  void _moveLeft() {
+    _channel.sink.add("a");
+  }
+
+  void _moveRight() {
+    _channel.sink.add("d");
+  }
+
+  //privremena funkcija dok ne razresim bag sa strane RPi-a
+  void _stop() {
+    _channel.sink.add("stop");
   }
 }
