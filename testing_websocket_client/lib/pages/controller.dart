@@ -22,7 +22,7 @@ double _sliderKamera = 0;
 double _kandzaRuke = 0;
 // final TextEditingController _controller = TextEditingController();
 final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
-late VideoPlayerController _controller;
+VideoPlayerController _controller;
 
 @override 
 void initState() {
