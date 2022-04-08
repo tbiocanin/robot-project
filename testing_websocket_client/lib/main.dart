@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'pages/controller.dart';
 void main() async => runApp(const MyApp());
 
@@ -43,7 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
   double _gornjiZglob = 0;
   double _sliderKamera = 0;
   double _kandzaRuke = 0;
-  final TextEditingController _controller = TextEditingController();
   final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
 
   
@@ -76,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             
-            Text("Lakat"),
+            const Text("Lakat"),
             Slider(
               min: 0,
               max: 180,
@@ -89,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            Text("Gornji zglob"),
+            const Text("Gornji zglob"),
             Slider(
               min: 0,
               max: 180,
@@ -102,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            Text("Kamera"),
+            const Text("Kamera"),
             Slider(
               min: 0,
               max: 180,

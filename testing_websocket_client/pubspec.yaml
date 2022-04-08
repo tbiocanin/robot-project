@@ -38,6 +38,8 @@ dependencies:
   socket_io_client: ^1.0.2
   joystick: ^1.0.2
   control_pad: ^1.1.1
+  flutter_vlc_player: ^7.1.0
+  # flutter_webrtc: ^0.8.5
   video_player: ^2.3.0
 
 dev_dependencies:

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:joystick/joystick.dart';
-// import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:video_player/video_player.dart';
-// import 'package:flutter_vlc_player/vlc_player_controller.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class Controller extends StatefulWidget {
   const Controller({Key ? key, required this.title}) : super(key : key);
@@ -15,26 +13,28 @@ class Controller extends StatefulWidget {
 }
 
 class _ControllerState extends State<Controller> {
-double _baseSlider = 0;
-double _lakatSlider = 0;
-double _gornjiZglob = 0;
-double _sliderKamera = 0;
-double _kandzaRuke = 0;
+  double _baseSlider = 0;
+  double _lakatSlider = 0;
+  double _gornjiZglob = 0;
+  double _sliderKamera = 0;
+  // double _kandzaRuke = 0;
 // final TextEditingController _controller = TextEditingController();
-final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
-VideoPlayerController _controller;
+  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1246');
+  // Socket socket;
 
-@override 
-void initState() {
-  super.initState();
-  _controller = VideoPlayerController.network(
-    'ws://192.168.0.106:12346'
-  )..initialize().then((_) {
-    setState(() {
-      
-    });
-  });
-}
+  late VlcPlayerController _videoPlayerController;
+  
+
+
+ @override
+  void initState() {
+    super.initState();
+
+    _videoPlayerController = VlcPlayerController.network(
+      'http://192.168.0.106:9090/stream/video.mjpeg',
+      autoPlay: true,
+    );
+  } 
 
 @override 
 Widget build(BuildContext context) {
@@ -71,30 +71,21 @@ Widget build(BuildContext context) {
                 ),
             ],
           ),
-
+// decodeImageFromPixels(pixels, width, height, format, callback)
           Column(
             //TODO: ovde ce ici kamera
             children: [
-              const Text("ovde ide Kamera"),
-              Center(
-                child: _controller.value.isInitialized 
-                ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                ) : Container(),
-              ),
-              Row(
-                children: [
-                  FloatingActionButton(
-                    onPressed: () {
-                      setState(() {
-                        _controller.value.isPlaying 
-                          ? _controller.pause()
-                          : _controller.play();
-                      });
-                    } 
-                  ),
-                ],
+              const Text('Ovde ide kamera'),
+              SizedBox(
+                width: 220,
+                height: 220,
+                child: Center(
+                  child: VlcPlayer(
+                      controller: _videoPlayerController,
+                      aspectRatio: 16/9,
+                      placeholder: Container(),
+                ),
+                ),
               )
             ],
           ),
@@ -185,13 +176,14 @@ Widget build(BuildContext context) {
   }
 
   //privremena funkcija dok ne razresim bag sa strane RPi-a
-  void _stop() {
-    _channel.sink.add("stop");
-  }
+  // void _stop() {
+  //   _channel.sink.add("stop");
+  // }
 
-  @override 
-  void dispose() {
+  @override
+  void dispose() async {
     super.dispose();
-    _controller.dispose();
+    await _videoPlayerController.stopRendererScanning();
+    await _videoPlayerController.dispose();
   }
 }
