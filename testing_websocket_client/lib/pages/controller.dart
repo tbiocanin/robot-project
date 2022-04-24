@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:testing_websocket_client/main.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:joystick/joystick.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+// import 'package:flutter/services.dart';
 
 class Controller extends StatefulWidget {
-  const Controller({Key ? key, required this.title}) : super(key : key);
-
-  final String title;
-
   @override
   _ControllerState createState() => _ControllerState();
+
+  
 }
+
+//TODO: connection page
 
 class _ControllerState extends State<Controller> {
   double _baseSlider = 0;
   double _lakatSlider = 0;
   double _gornjiZglob = 0;
   double _sliderKamera = 0;
-  // double _kandzaRuke = 0;
-// final TextEditingController _controller = TextEditingController();
   final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1246');
-  // Socket socket;
+
 
   late VlcPlayerController _videoPlayerController;
-  
-
-
  @override
   void initState() {
     super.initState();
@@ -38,6 +36,11 @@ class _ControllerState extends State<Controller> {
 
 @override 
 Widget build(BuildContext context) {
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+  ]);
+
     return Scaffold(
       
       // resizeToAvoidBottomInset: false,
@@ -86,6 +89,20 @@ Widget build(BuildContext context) {
                       placeholder: Container(),
                 ),
                 ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyHomePage(title: 'WebSocket Demo'),
+                    )
+                  );
+                  SystemChrome.setPreferredOrientations([
+                    DeviceOrientation.portraitUp,
+                    ]);
+                },
+                child: const Text("vrati nazad")
               )
             ],
           ),
@@ -174,11 +191,6 @@ Widget build(BuildContext context) {
   void _moveRight() {
     _channel.sink.add("d");
   }
-
-  //privremena funkcija dok ne razresim bag sa strane RPi-a
-  // void _stop() {
-  //   _channel.sink.add("stop");
-  // }
 
   @override
   void dispose() async {

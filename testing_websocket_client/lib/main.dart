@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:web_socket_channel/io.dart';
 import 'pages/controller.dart';
 void main() async => runApp(const MyApp());
 
@@ -9,15 +8,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
     const title = 'WebSocket Demo';
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: title,
-      home: Controller(
+      home: MyHomePage(
         title: title,
       ),
     );
@@ -37,127 +32,98 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _baseSlider = 0;
-  double _lakatSlider = 0;
-  double _gornjiZglob = 0;
-  double _sliderKamera = 0;
-  double _kandzaRuke = 0;
-  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:12346');
 
-  
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.title),
-      // ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(500, 20, 20, 20),
-        
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-
-          children: [
-            const Text("Servo osnove"),
-              Slider(
-              value: _baseSlider,
-              min: 0,
-              max: 180,
-              // divisions: 5,
-              label: '${_baseSlider.round()}',
-              onChanged: (double value) {
-                setState(() {
-                  _baseSlider = value;
-                  _channel.sink.add("0" + _baseSlider.toString());
-                });
-              },
-            ),
-            
-            const Text("Lakat"),
-            Slider(
-              min: 0,
-              max: 180,
-              value: _lakatSlider,
-              onChanged: (double value) {
-                setState(() {
-                  _lakatSlider = value;
-                  // _channel.sink.add("Drugi");
-                  _channel.sink.add("1" + _lakatSlider.toString());
-                });
-              },
-            ),
-            const Text("Gornji zglob"),
-            Slider(
-              min: 0,
-              max: 180,
-              value: _gornjiZglob,
-              onChanged: (double value) {
-                setState(() {
-                  _gornjiZglob = value;
-                  // _channel.sink.add("Drugi");
-                  _channel.sink.add("2" + _gornjiZglob.toString());
-                });
-              },
-            ),
-            const Text("Kamera"),
-            Slider(
-              min: 0,
-              max: 180,
-              value: _sliderKamera,
-              onChanged: (double value) {
-                setState(() {
-                  _sliderKamera = value;
-                  // _channel.sink.add("Drugi");
-                  _channel.sink.add("3" + _sliderKamera.toString());
-                });
-              },
-            ),
-
-            const Text("servo kandze ruke"),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // SizedBox(height: 10),
-                SizedBox(
-                  height: 10,
-                  width: 163,
-                  child: Slider(
-                    min: 0,
-                    max: 180,
-                    value: _kandzaRuke,
-                    onChanged: (double value) {
-                      setState(() {
-                        _kandzaRuke = value;
-                        // _channel.sink.add("Drugi");
-                        _channel.sink.add("4" + _kandzaRuke.toString());
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            StreamBuilder(
-              stream: _channel.stream,
-              builder: (context, snapshot) {
-                return Text(snapshot.hasData ? '${snapshot.data}' : '');
-              },
-            ),
-
-            
-          ],
+      body: Container(
+        // child: DecoratedBox(
+        decoration: const BoxDecoration (
+          image: DecorationImage(
+              image: AssetImage("images/backGroundUI.jpg"),
+              fit: BoxFit.cover,
+            )
+          ),
+        child: Center(
+          child: _connection(),
         ),
-      ),
-
-      
-      // This trailing comma makes auto-formatting nicer for build methods.
+      // ),
+      )
     );
   }
 
-  @override
-  void dispose() {
-    _channel.sink.close();
-    super.dispose();
-  }
+  Widget _connection() => Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Uneti IP:port kontrolera",
+              style: TextStyle(height: 5, fontSize: 18, color: Color(0xff23278E), fontStyle: FontStyle.italic),
+            
+            ),
+            const TextField(
+              decoration: InputDecoration(
+                hintText: "IP:PORT kontrolera",
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff23278E))
+                )
+              ),
+              
+            ),
+            ElevatedButton(
+              
+              onPressed: () {
+                //go to the controller page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: ((context) => Controller()))
+                );
+
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                )
+              ),
+              // padding: EdgeInsets.all(0.0),
+              child: Ink(
+                // padding: EdgeInsets.all(0.0),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xff23278E), Color(0xff8F01FF)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.centerRight,                  
+                  ),
+                  borderRadius: BorderRadius.circular(20.0)
+                ),
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 150.0, minHeight: 40.0),
+                  alignment: Alignment.center,
+                  child: const Text("Povezi se"),
+                ),
+              ), 
+            )              
+            
+          ],
+        ),
+  );
+
+  Widget _colourGradient() => Ink(
+    decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xff23278E), Color(0xff8F01FF)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.centerRight,                  
+                  ),
+    )
+  );
 }
