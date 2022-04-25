@@ -8,23 +8,22 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class Controller extends StatefulWidget {
   @override
-  _ControllerState createState() => _ControllerState();
-
-  
+  _ControllerState createState() => _ControllerState(); 
 }
 
-//TODO: connection page
+
 
 class _ControllerState extends State<Controller> {
   double _baseSlider = 0;
   double _lakatSlider = 0;
   double _gornjiZglob = 0;
   double _sliderKamera = 0;
-  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1246');
 
+  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1246');
+   
 
   late VlcPlayerController _videoPlayerController;
- @override
+  @override
   void initState() {
     super.initState();
 
@@ -34,13 +33,12 @@ class _ControllerState extends State<Controller> {
     );
   } 
 
+
 @override 
 Widget build(BuildContext context) {
-
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
   ]);
-
     return Scaffold(
       
       // resizeToAvoidBottomInset: false,
@@ -75,19 +73,20 @@ Widget build(BuildContext context) {
             ],
           ),
 // decodeImageFromPixels(pixels, width, height, format, callback)
+          
           Column(
             //TODO: ovde ce ici kamera
             children: [
               const Text('Ovde ide kamera'),
               SizedBox(
                 width: 220,
-                height: 220,
+                height: 100,
                 child: Center(
                   child: VlcPlayer(
                       controller: _videoPlayerController,
                       aspectRatio: 16/9,
                       placeholder: Container(),
-                ),
+                  ),
                 ),
               ),
               ElevatedButton(
@@ -100,7 +99,7 @@ Widget build(BuildContext context) {
                   );
                   SystemChrome.setPreferredOrientations([
                     DeviceOrientation.portraitUp,
-                    ]);
+                  ]);
                 },
                 child: const Text("vrati nazad")
               )
@@ -191,6 +190,7 @@ Widget build(BuildContext context) {
   void _moveRight() {
     _channel.sink.add("d");
   }
+  
 
   @override
   void dispose() async {

@@ -6,8 +6,12 @@ void main() async => runApp(const MyApp());
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  
+
   @override
   Widget build(BuildContext context) {
+
+    
     const title = 'WebSocket Demo';
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -31,7 +35,16 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+String inputString = "";
+
 class _MyHomePageState extends State<MyHomePage> {
+  final textController = TextEditingController();
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
               style: TextStyle(height: 5, fontSize: 18, color: Color(0xff23278E), fontStyle: FontStyle.italic),
             
             ),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: textController,
+              decoration: const InputDecoration(
                 hintText: "IP:PORT kontrolera",
                 fillColor: Colors.white,
                 filled: true,
@@ -82,11 +96,21 @@ class _MyHomePageState extends State<MyHomePage> {
               
               onPressed: () {
                 //go to the controller page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: ((context) => Controller()))
-                );
+                // setState(() {
+                  if(textController.text == '192.168.0.106:1246') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: ((context) => Controller()))
+                    );
 
+                    // SystemChrome.setPreferredOrientations([
+                    //   DeviceOrientation.landscapeLeft,
+                    // ]);
+                  } else {
+                    textController.text = 'Greska';
+                  }
+                // });
+                
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.zero,
