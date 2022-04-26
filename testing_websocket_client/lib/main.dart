@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 //go to the controller page
                 // setState(() {
-                  if(textController.text == '192.168.0.106:1246') {
+                  if(textController.text == '192.168.0.106:1250') {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: ((context) => Controller()))

@@ -4,6 +4,7 @@ import 'package:testing_websocket_client/main.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:joystick/joystick.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:web_socket_channel/status.dart' as status;
 // import 'package:flutter/services.dart';
 
 class Controller extends StatefulWidget {
@@ -19,7 +20,7 @@ class _ControllerState extends State<Controller> {
   double _gornjiZglob = 0;
   double _sliderKamera = 0;
 
-  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1246');
+  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1256');
    
 
   late VlcPlayerController _videoPlayerController;
@@ -42,7 +43,14 @@ Widget build(BuildContext context) {
     return Scaffold(
       
       // resizeToAvoidBottomInset: false,
-      body: GridView.count(
+      body: Container(
+        decoration: const BoxDecoration (
+          image: DecorationImage(
+              image: AssetImage("images/kontrolerUI.jpg"),
+              fit: BoxFit.cover,
+            )
+          ),
+        child: GridView.count(
         // padding: const EdgeInsets.symme,
         
         crossAxisCount: 3,
@@ -75,7 +83,6 @@ Widget build(BuildContext context) {
 // decodeImageFromPixels(pixels, width, height, format, callback)
           
           Column(
-            //TODO: ovde ce ici kamera
             children: [
               const Text('Ovde ide kamera'),
               SizedBox(
@@ -95,11 +102,15 @@ Widget build(BuildContext context) {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const MyHomePage(title: 'WebSocket Demo'),
-                    )
+                    ), 
+                    
                   );
                   SystemChrome.setPreferredOrientations([
                     DeviceOrientation.portraitUp,
                   ]);
+                  _channel.sink.close(status.goingAway);
+                  // _channel.sink.add("stop");
+                  
                 },
                 child: const Text("vrati nazad")
               )
@@ -172,8 +183,19 @@ Widget build(BuildContext context) {
         ],
         
       ),
+      ),
     );
   }
+
+  Widget _control() => Padding(
+    padding: const EdgeInsets.all(20.0),
+    child: GridView.count(
+      crossAxisCount: 3,
+        children: [
+
+        ],
+      ),
+  );
 
   void _moveForward() {
     _channel.sink.add("w");
