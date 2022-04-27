@@ -117,7 +117,7 @@ Widget build(BuildContext context) {
                       DeviceOrientation.portraitUp,
                     ]);
                     _channel.sink.close(status.goingAway);
-                    // _channel.sink.add("stop");
+                    _channel.sink.add("stop");
                     
                   },
                   child: const Text("vrati nazad")
@@ -202,7 +202,7 @@ Widget build(BuildContext context) {
                       ),
                     ),
                   ),
-                  
+
                   const Text("Bazni servo 2"),
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(

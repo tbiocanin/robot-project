@@ -9,6 +9,13 @@ import cv2, time, picamera
 speed = 100 # za sada je ovako staticka brzina
 # TODO: skloniti prom, prihvatati zeljenu brzinu od korisnika
 dc_rework.setup()
+
+def robot_init():
+    kit.servo[1].angle = 0 #u redu
+    kit.servo[2].angle = 150 #u redu
+    kit.servo[3].angle = 0 # u redu
+    kit.servo[4].angle = 0
+
 def movement(message):
     #TODO: implement better movement logic
 
@@ -55,18 +62,20 @@ async def echo(websocket):
     #     serve.close()
     
 
-    # if websocket:
-    #     print("Povezao se " + str(websocket))
-    #     os.system("$sudo uv4l --auto-video_nr --driver raspicam --encoding h264 --width 640 --height 480 --framerate 20 --server-option '--port=9090' --server-option '--max-queued-connections=30' --server-option '--max-streams=25' --server-option '--max-threads=29'")
+    if websocket:
+        print("Povezao se " + str(websocket))
+        robot_init()
+        # os.system("$sudo uv4l --auto-video_nr --driver raspicam --encoding h264 --width 640 --height 480 --framerate 20 --server-option '--port=9090' --server-option '--max-queued-connections=30' --server-option '--max-streams=25' --server-option '--max-threads=29'")
     # else:
-    #     os.system("sudo pkill uv4l")
+        # os.system("sudo pkill uv4l")
 
     async for message in websocket:
         
         await websocket.send(message)
         
         if message == "stop":
-            websocket.close()
+            # websocket.close()
+            robot_init()
             break
 
         dc_motor = message
@@ -94,11 +103,11 @@ async def echo(websocket):
 
 
 async def main():
-
+    # robot_init()
     try:
         os.system("$sudo uv4l --auto-video_nr --driver raspicam --encoding h264 --width 640 --height 480 --framerate 20 --server-option '--port=9090' --server-option '--max-queued-connections=30' --server-option '--max-streams=25' --server-option '--max-threads=29'")
-
-        async with serve(echo, "192.168.0.106", 1256):
+        
+        async with serve(echo, "192.168.0.106", 1258):
         # client_socket, addr = server_socket.accept()
             await asyncio.Future()  # run forever
     except KeyboardInterrupt:
