@@ -50,139 +50,212 @@ Widget build(BuildContext context) {
               fit: BoxFit.cover,
             )
           ),
-        child: GridView.count(
-        // padding: const EdgeInsets.symme,
-        
-        crossAxisCount: 3,
-        
-        children: [
-
-          //TODO: ovde ce ici kontroler:
-          Column(
-            children: [
-              const Text("Ovde ide kontroler"),
-              SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: Joystick(
-                    
-                    size: 150,
-                    isDraggable: false,
-                    backgroundColor: Colors.black,
-                    opacity: .4,
-                    joystickMode: JoystickModes.all,
-                    onUpPressed: _moveForward,
-                    onDownPressed: _moveBackward,
-                    onLeftPressed: _moveLeft,
-                    onRightPressed: _moveRight,
-                    
-                  ),
-                ),
-            ],
-          ),
-// decodeImageFromPixels(pixels, width, height, format, callback)
+        child: Expanded(
+          child: GridView.count(
+          // padding: const EdgeInsets.symme,
           
-          Column(
-            children: [
-              const Text('Ovde ide kamera'),
-              SizedBox(
-                width: 220,
-                height: 100,
-                child: Center(
-                  child: VlcPlayer(
-                      controller: _videoPlayerController,
-                      aspectRatio: 16/9,
-                      placeholder: Container(),
+          crossAxisCount: 3,
+          
+          children: [
+        
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 60,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Ovde ide kontroler"),
+                  SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: Joystick(
+                        
+                        size: 150,
+                        isDraggable: false,
+                        backgroundColor: Colors.black,
+                        opacity: .7,
+                        joystickMode: JoystickModes.all,
+                        onUpPressed: _moveForward,
+                        onDownPressed: _moveBackward,
+                        onLeftPressed: _moveLeft,
+                        onRightPressed: _moveRight,
+                        
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        // decodeImageFromPixels(pixels, width, height, format, callback)
+            
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Ovde ide kamera'),
+                SizedBox(
+                  
+                  width: 220,
+                  height: 100,
+                  child: Center(
+                    child: VlcPlayer(
+                        controller: _videoPlayerController,
+                        aspectRatio: 16/9,
+                        placeholder: const Center(child: CircularProgressIndicator(backgroundColor: Color(0xff23278E)),),
+                    ),
                   ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyHomePage(title: 'WebSocket Demo'),
-                    ), 
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MyHomePage(title: 'WebSocket Demo'),
+                      ), 
+                      
+                    );
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
+                    _channel.sink.close(status.goingAway);
+                    // _channel.sink.add("stop");
                     
-                  );
-                  SystemChrome.setPreferredOrientations([
-                    DeviceOrientation.portraitUp,
-                  ]);
-                  _channel.sink.close(status.goingAway);
-                  // _channel.sink.add("stop");
-                  
-                },
-                child: const Text("vrati nazad")
-              )
-            ],
-          ),
-
-          Column(
-                        
-            children:[
-              const Text("Servo osnove"),
-              Slider(
-                value: _baseSlider,
-                min: 0,
-                max: 180,
-                  // divisions: 5,
-                label: '${_baseSlider.round()}',
-                onChanged: (double value) {
-                  setState(() {
-                    _baseSlider = value;
-                    _channel.sink.add("0" + _baseSlider.toString());
-                  });
-                },
-              ),
-
-              const Text("Lakat"),
-              Slider(
-                min: 0,
-                max: 180,
-                value: _lakatSlider,
-                onChanged: (double value) {
-                  setState(() {
-                    _lakatSlider = value;
-                    // _channel.sink.add("Drugi");
-                    _channel.sink.add("1" + _lakatSlider.toString());
-                  });
-                },
-              ),
-              const Text("Gornji zglob"),
-              Slider(
-                min: 0,
-                max: 180,
-                value: _gornjiZglob,
-                onChanged: (double value) {
-                  setState(() {
-                    _gornjiZglob = value;
-                    // _channel.sink.add("Drugi");
-                    _channel.sink.add("2" + _gornjiZglob.toString());
-                  });
-                },
-              ),
-              // const SizedBox(height: 30,),
-              const Text("Kamera"),
-              Expanded(
-                child: Slider(
-                  min: 0,
-                  max: 180,
-                  value: _sliderKamera,
-                  onChanged: (double value) {
-                    setState(() {
-                      _sliderKamera = value;
-                      // _channel.sink.add("Drugi");
-                      _channel.sink.add("3" + _sliderKamera.toString());
-                    });
                   },
+                  child: const Text("vrati nazad")
                 ),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 12.0,
+                    // trackShape: RectangularSliderTrackShape(),
+                  ),
+                  child: Container(
+                    width: 200,
+                    height: 50,
+                    child: Slider(
+                      min: 0,
+                      max: 120,
+                      value: _sliderKamera,
+                      onChanged: (value) {
+                        setState(() {
+                          _sliderKamera = value;
+                        });
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
+            // const Text("Kandza ruke"),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 18,
+                left: 10,
+                right: 3,
               ),
-            ],
-            
-          )
-        ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,            
+                children:[
+                  const Text("Kandza ruke"),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 12.0,
+                    ),
+                    child: Container(
+                      width: 200,
+                      // height: 100,
+                      child: Slider(
+                        value: _baseSlider,
+                        min: 0,
+                        max: 120,
+                          // divisions: 5,
+                        label: '${_baseSlider.round()}',
+                        onChanged: (double value) {
+                          setState(() {
+                            _baseSlider = value;
+                            _channel.sink.add("0" + _baseSlider.toString());
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  // const Text("Kandza"),
+                  
         
-      ),
+                  const Text("Lakat"),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 12,
+                    ),
+                    child: Container(
+                      width: 200,
+                      child: Slider(
+                        min: 0,
+                        max: 180,
+                        value: _lakatSlider,
+                        onChanged: (double value) {
+                          setState(() {
+                            _lakatSlider = value;
+                            // _channel.sink.add("Drugi");
+                            _channel.sink.add("1" + _lakatSlider.toString());
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  
+                  const Text("Bazni servo 2"),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 12,
+                    ),
+                    child: Container(
+                      width: 200,
+                      child: Slider(
+                        min: 0,
+                        max: 180,
+                        value: _gornjiZglob,
+                        onChanged: (double value) {
+                          setState(() {
+                            _gornjiZglob = value;
+                            // _channel.sink.add("Drugi");
+                            _channel.sink.add("2" + _gornjiZglob.toString());
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  // const SizedBox(height: 30,),
+                  const Text("Bazni servo 1"),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 12,
+                    ),
+                    child: Expanded(
+                      child: Container(
+                        width: 200,
+                        child: Slider(
+                          min: 0,
+                          max: 180,
+                          value: _sliderKamera,
+                          onChanged: (double value) {
+                            setState(() {
+                              _sliderKamera = value;
+                              // _channel.sink.add("Drugi");
+                              _channel.sink.add("3" + _sliderKamera.toString());
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                
+              ),
+            )
+          ],
+          
+              ),
+        ),
       ),
     );
   }
