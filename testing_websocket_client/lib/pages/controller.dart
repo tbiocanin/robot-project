@@ -20,7 +20,7 @@ class _ControllerState extends State<Controller> {
   double _gornjiZglob = 0;
   double _sliderKamera = 0;
 
-  final _channel = IOWebSocketChannel.connect('ws://192.168.0.106:1256');
+  final _channel = IOWebSocketChannel.connect('ws://192.168.0.109:1258');
    
 
   late VlcPlayerController _videoPlayerController;
@@ -29,7 +29,7 @@ class _ControllerState extends State<Controller> {
     super.initState();
 
     _videoPlayerController = VlcPlayerController.network(
-      'http://192.168.0.106:9090/stream/video.mjpeg',
+      'http://192.168.0.109:9090/stream/video.mjpeg',
       autoPlay: true,
     );
   } 

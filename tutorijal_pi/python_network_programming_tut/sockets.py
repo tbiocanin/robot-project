@@ -65,9 +65,6 @@ async def echo(websocket):
     if websocket:
         print("Povezao se " + str(websocket))
         robot_init()
-        # os.system("$sudo uv4l --auto-video_nr --driver raspicam --encoding h264 --width 640 --height 480 --framerate 20 --server-option '--port=9090' --server-option '--max-queued-connections=30' --server-option '--max-streams=25' --server-option '--max-threads=29'")
-    # else:
-        # os.system("sudo pkill uv4l")
 
     async for message in websocket:
         
@@ -79,13 +76,10 @@ async def echo(websocket):
             break
 
         dc_motor = message
-        # if (ord(message) >= 48 and ord(message) <= 57):
         [tmp_servo, tmp_angle] = servo_to_be_used(message)
         servo_index = int(float(tmp_servo)) #conversion is needed from tuple to int
         angle_val = int(float(tmp_angle))
-        # logika za prva cetiri servo motora
-        # TODO: implementirati dinamicniji pristup, imas 16 kanala, ne mora da znaci da ce 
-        # biti tacno na prvih 4 kanala povezani servo motori (tb 21/11/2021)
+
         if servo_index == 0:
             kit.servo[servo_index].angle = angle_val
         elif servo_index == 1:
@@ -97,9 +91,7 @@ async def echo(websocket):
         elif servo_index == 4:
             kit.servo[servo_index].angle = angle_val
 
-        # movement(dc_motor)
 
-        # dc_rework.destroy()
 
 
 async def main():
